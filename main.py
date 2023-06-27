@@ -2,24 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from googletrans import Translator
 
-
-def translate():
-    for language, suffix in languages.items():
-        if comboTwo.get() == language:
-            text = t_input.get("1.0", END)
-            print(text)
-            translation = translator.translate(text, dest=suffix)
-            t_output.delete("1.0", END)
-            t_output.insert("1.0", translation.text)
-
-
-root = Tk()
-root.geometry("500x350")
-root.title("Переводчик")
-root.resizable(width=False, height=False)
-root["bg"] = "black"
-
 translator = Translator()
+
 languages = {
     "Русский": "ru",
     "Английский": "en",
@@ -50,9 +34,22 @@ languages = {
     "Болгарский": "bg",
     "Словацкий": "sk",
     "Словенский": "sl",
-    "Латинский": "la",
+    "Латинский": "la"
 }
 
+def translate():
+    selected_language = comboTwo.get()
+    if selected_language in languages:
+        text = input_text.get("1.0", END)
+        translation = translator.translate(text, dest=languages[selected_language])
+        output_text.delete("1.0", END)
+        output_text.insert("1.0", translation.text)
+
+root = Tk()
+root.geometry("500x350")
+root.title("Переводчик")
+root.resizable(width=False, height=False)
+root.config(bg="black")
 
 header_frame = Frame(root, bg="black")
 header_frame.pack(fill=X)
@@ -60,28 +57,24 @@ header_frame.grid_columnconfigure(0, weight=1)
 header_frame.grid_columnconfigure(1, weight=1)
 header_frame.grid_columnconfigure(2, weight=1)
 
-comboOne = ttk.Combobox(
-    header_frame, values=[lang for lang in languages], state="readonly"
-)
+comboOne = ttk.Combobox(header_frame, values=list(languages.keys()), state="readonly")
 comboOne.current(0)
 comboOne.grid(row=0, column=0)
 
 label = Label(header_frame, fg="white", bg="black", font="Arial 17 bold", text="->")
 label.grid(row=0, column=1)
 
-comboTwo = ttk.Combobox(
-    header_frame, values=[lang for lang in languages], state="readonly"
-)
+comboTwo = ttk.Combobox(header_frame, values=list(languages.keys()), state="readonly")
 comboTwo.current(1)
 comboTwo.grid(row=0, column=2)
 
-t_input = Text(root, width=35, height=5, font="Arial 12 bold")
-t_input.pack(pady=20)
+input_text = Text(root, width=35, height=5, font="Arial 12 bold")
+input_text.pack(pady=20)
 
-btn = Button(root, width=45, text="Перевести", command=translate)
-btn.pack()
+translate_button = Button(root, width=45, text="Перевести", command=translate)
+translate_button.pack()
 
-t_output = Text(root, width=35, height=5, font="Arial 12 bold")
-t_output.pack(pady=20)
+output_text = Text(root, width=35, height=5, font="Arial 12 bold")
+output_text.pack(pady=20)
 
 root.mainloop()
